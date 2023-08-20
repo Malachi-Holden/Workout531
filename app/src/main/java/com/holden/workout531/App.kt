@@ -100,8 +100,8 @@ fun App() {
 @Composable
 fun AppBarIcon(backStackEntry: NavBackStackEntry?, onBack: ()->Unit, openDrawer: ()->Unit){
     when (backStackEntry?.destination?.route){
-        Destination.ChoosePlan.routeString() -> {}
-        Destination.Plan.routeString() -> {
+        Destination.ChoosePlan.name -> {}
+        Destination.Plan.name -> {
             IconButton(onClick = openDrawer) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
@@ -109,7 +109,7 @@ fun AppBarIcon(backStackEntry: NavBackStackEntry?, onBack: ()->Unit, openDrawer:
                 )
             }
         }
-        Destination.Detail.routeString() -> {
+        Destination.Detail.name -> {
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,

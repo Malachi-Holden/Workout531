@@ -10,23 +10,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.holden.workout531.testPlan
 
 @Composable
-fun WorkoutPlanNullableView(workoutPlan: WorkoutPlan?, onWorkoutClicked: (Int, Int, Int) -> Unit){
+fun WorkoutPlanNullableView(workoutPlan: WorkoutPlan?, focusedPeriod: Int?, setFocusedPeriod: (Int?)->Unit, onWorkoutClicked: (Int, Int, Int) -> Unit){
     if (workoutPlan == null){
         WorkoutPlanEmptyView()
     } else {
-        WorkoutPlanView(workoutPlan = workoutPlan, onWorkoutClicked = onWorkoutClicked)
+        WorkoutPlanView(workoutPlan, focusedPeriod, setFocusedPeriod, onWorkoutClicked)
     }
 }
 
@@ -42,25 +37,22 @@ fun WorkoutPlanEmptyView(){
 }
 
 @Composable
-fun WorkoutPlanView(workoutPlan: WorkoutPlan, onWorkoutClicked: (Int, Int, Int) -> Unit){
-    var focusedIndex by remember {
-        mutableIntStateOf(-1) // remember this when you come back to it
-    }
+fun WorkoutPlanView(workoutPlan: WorkoutPlan, focusedPeriod: Int?, setFocusedPeriod: (Int?)->Unit, onWorkoutClicked: (Int, Int, Int) -> Unit){
     LazyColumn {
         items(workoutPlan.periods.size){
             Column(
                 modifier = Modifier.clickable {
-                    focusedIndex = if (focusedIndex == it) -1 else it
+                    setFocusedPeriod(if (focusedPeriod == it) null else it)
                 }
             ) {
-                val periodTitleStyle = if (focusedIndex == it) {
+                val periodTitleStyle = if (focusedPeriod == it) {
                     MaterialTheme.typography.titleLarge
                 } else {
                     MaterialTheme.typography.labelLarge
                 }
                 Text(text = workoutPlan.periods[it], style = periodTitleStyle)
 
-                if (focusedIndex == it){
+                if (focusedPeriod == it){
                     WorkoutPeriodView(it, workoutPlan, onWorkoutClicked = onWorkoutClicked)
                 }
             }
@@ -96,7 +88,7 @@ fun WorkoutPeriodView(period: Int, workoutPlan: WorkoutPlan, onWorkoutClicked: (
 @Preview
 @Composable
 fun WorkoutPlanPreview(){
-    WorkoutPlanView(workoutPlan = testPlan, onWorkoutClicked = {_,_,_->})
+    WorkoutPlanView(workoutPlan = testPlan, 1, {}, onWorkoutClicked = {_,_,_->})
 }
 
 @Preview
