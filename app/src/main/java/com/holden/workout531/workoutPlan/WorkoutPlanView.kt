@@ -1,8 +1,10 @@
 package com.holden.workout531.workoutPlan
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -18,6 +20,26 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
 import com.holden.workout531.testPlan
+
+@Composable
+fun WorkoutPlanNullableView(workoutPlan: WorkoutPlan?, onWorkoutClicked: (Int, Int, Int) -> Unit){
+    if (workoutPlan == null){
+        WorkoutPlanEmptyView()
+    } else {
+        WorkoutPlanView(workoutPlan = workoutPlan, onWorkoutClicked = onWorkoutClicked)
+    }
+}
+
+@Composable
+fun WorkoutPlanEmptyView(){
+    Box(modifier = Modifier.fillMaxSize()){
+        Text(
+            text = "No plan selected",
+            modifier = Modifier.align(Alignment.Center),
+            style = MaterialTheme.typography.titleLarge
+        )
+    }
+}
 
 @Composable
 fun WorkoutPlanView(workoutPlan: WorkoutPlan, onWorkoutClicked: (Int, Int, Int) -> Unit){
