@@ -35,8 +35,8 @@ class ForBeginners531(
     )
 }
 
-class Template531(val tm: Double, val name: String): WorkoutTemplate {
-    override fun workoutsForPeriods(): List<Workout> =
+class Template531(tm: Double, val name: String): WorkoutTemplate {
+    override val workoutsForPeriods: List<Workout> =
         listOf(
             Workout(name,"Warmup then 3 x 5",
                 listOf(
