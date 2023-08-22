@@ -14,7 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.dp
-import com.holden.workout531.testPlan
 
 @Composable
 fun WorkoutPlanNullableView(workoutPlan: WorkoutPlan?, focusedPeriod: Int?, setFocusedPeriod: (Int?)->Unit, onWorkoutClicked: (Int, Int, Int) -> Unit){
@@ -84,6 +83,8 @@ fun WorkoutPeriodView(period: Int, workoutPlan: WorkoutPlan, onWorkoutClicked: (
         }
     }
 }
+
+val testPlan = forBeginners531("test plan",100.0, 100.0, 100.0, 100.0)
 
 @Preview
 @Composable

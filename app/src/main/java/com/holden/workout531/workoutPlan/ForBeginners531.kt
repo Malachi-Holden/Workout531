@@ -4,39 +4,38 @@ import com.holden.workout531.workout.Workout
 import com.holden.workout531.workout.WorkoutSet
 
 
-class ForBeginners531(
+fun forBeginners531(
+    planName: String,
     squatTM: Double,
     deadliftTM: Double,
     overheadTM: Double,
     benchTM: Double
-): WorkoutPlan{
-
-    override val periods: List<String> = listOf(
+) = WorkoutPlan(
+    name = planName,
+    periods = listOf(
         "Week 1", "Week 2", "Week 3"
-    )
-
-    override val days: List<String> = listOf(
+    ),
+    days = listOf(
         "Day 1", "Day 2", "Day 3"
-    )
-
-    override val templatesForDays = listOf<List<WorkoutTemplate>>(
+    ),
+    templatesForDays = listOf(
         listOf(
-            Template531(squatTM, "Squat"),
-            Template531(benchTM, "Bench")
+            template531ForBeginners(squatTM, "Squat"),
+            template531ForBeginners(benchTM, "Bench")
         ),
         listOf(
-            Template531(deadliftTM, "Deadlift"),
-            Template531(overheadTM, "Overhead")
+            template531ForBeginners(deadliftTM, "Deadlift"),
+            template531ForBeginners(overheadTM, "Overhead")
         ),
         listOf(
-            Template531(squatTM, "Squat"),
-            Template531(benchTM, "Bench")
+            template531ForBeginners(squatTM, "Squat"),
+            template531ForBeginners(benchTM, "Bench")
         )
     )
-}
+)
 
-class Template531(tm: Double, val name: String): WorkoutTemplate {
-    override val workoutsForPeriods: List<Workout> =
+fun template531ForBeginners(tm: Double, name: String) = WorkoutTemplate (
+    workoutsForPeriods =
         listOf(
             // include accessory stuff
             Workout(name,"Warmup then 3 x 5",
@@ -71,4 +70,4 @@ class Template531(tm: Double, val name: String): WorkoutTemplate {
                 )
             )
         )
-    }
+)

@@ -3,7 +3,9 @@ package com.holden.workout531.workoutPlan
 import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,10 +15,12 @@ import androidx.compose.ui.platform.LocalContext
 import com.holden.workout531.utility.DoubleTextField
 import com.holden.workout531.utility.ValidatingTextField
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ForBeginnersInitializeView(
     onCreatePlan: (WorkoutPlan)->Unit
 ){
+    val (planName, setPlanName) = remember { mutableStateOf("") }
     val (squatTM, setSquatTM) = remember { mutableStateOf("") }
     var squatValid: Double? by remember { mutableStateOf(null) }
     var squatError by remember { mutableStateOf(false) }
@@ -34,6 +38,12 @@ fun ForBeginnersInitializeView(
     var overheadError by remember { mutableStateOf(false) }
 
     Column {
+        TextField(
+            value = planName,
+            onValueChange = setPlanName,
+            placeholder = { Text(text = "Name of plan") },
+            singleLine = true,
+        )
         DoubleTextField(
             value = squatTM,
             onValueChange = setSquatTM,
@@ -111,7 +121,8 @@ fun ForBeginnersInitializeView(
                     overheadError = true
                 }
                 if (!anyNull){
-                    onCreatePlan(ForBeginners531(
+                    onCreatePlan(forBeginners531(
+                        planName,
                         squatValid ?: return@Button,
                         benchValid ?: return@Button,
                         deadliftValid ?: return@Button,
