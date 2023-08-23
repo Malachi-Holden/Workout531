@@ -66,6 +66,9 @@ fun App() {
                     onSelectPlan = {
                         viewModel.setCurrentPlanIndex(context, it)
                         scope.launch{ drawerState.close() }
+                    },
+                    onDeletePlan = {
+                        viewModel.deletePlan(context, it)
                     }
                 )
             },
@@ -133,7 +136,8 @@ fun AppDrawer(
     showForBeginnersView: ()->Unit,
     planList: List<WorkoutPlan>,
     currentPlanIndex: Int?,
-    onSelectPlan: (Int)->Unit
+    onSelectPlan: (Int)->Unit,
+    onDeletePlan: (Int)->Unit
 ){
     ModalDrawerSheet {
         when (currentDestination){
@@ -145,6 +149,11 @@ fun AppDrawer(
             else -> Unit
         }
         Divider()
-        PlanListView(plans = planList, currentIndex = currentPlanIndex, onSelect = onSelectPlan)
+        PlanListView(
+            plans = planList,
+            currentIndex = currentPlanIndex,
+            onSelect = onSelectPlan,
+            onDelete = onDeletePlan
+        )
     }
 }

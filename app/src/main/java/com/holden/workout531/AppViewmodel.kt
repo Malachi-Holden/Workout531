@@ -3,6 +3,7 @@ package com.holden.workout531
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import arrow.optics.optics
+import com.holden.workout531.utility.deletedAt
 import com.holden.workout531.workoutPlan.PlanRepository
 import com.holden.workout531.workoutPlan.WorkoutPlan
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,13 +32,13 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
         _workoutPlan.value = plan
         _plans.value += plan
         _currentPlanIndex.value = _plans.value.size - 1
-        repository.persistPlans(context, _plans.value.size - 1, plans.value)
+        persistPlans(context)
     }
 
     fun setCurrentPlanIndex(context: Context, index: Int){
         _currentPlanIndex.value = index
         _workoutPlan.value = plans.value[index]
-        repository.persistPlans(context, index, plans.value)
+        persistPlans(context)
     }
 
     fun setWorkoutPeriod(periodIndex: Int?){
@@ -47,6 +48,21 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
     fun setCurrentWorkoutIndex(index: WorkoutIndex){
         _currentWorkoutIndex.value = index
     }
+
+    fun deletePlan(context: Context, index: Int){
+        if (workoutPlan.value == plans.value.getOrNull(index)){
+            _workoutPlan.value = null
+            _currentPlanIndex.value = null
+        }
+        val currentIndex = currentPlanIndex.value
+        if (currentIndex != null && currentIndex > index){
+            _currentPlanIndex.value = currentIndex - 1
+        }
+        _plans.value = plans.value.deletedAt(index)
+        persistPlans(context)
+    }
+
+    fun persistPlans(context: Context) = repository.persistPlans(context, currentPlanIndex.value, plans.value)
 }
 
 @optics
