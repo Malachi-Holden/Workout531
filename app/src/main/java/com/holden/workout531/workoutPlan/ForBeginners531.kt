@@ -45,8 +45,8 @@ fun template531ForBeginners(tm: Double, name: String) = WorkoutTemplate (
                     WorkoutSet(5, .6 * tm),
                     WorkoutSet(5, .65 * tm),
                     WorkoutSet(5, .75 * tm),
-                    WorkoutSet(5, .85 * tm)
-                // include 5/5
+                    WorkoutSet(5, .85 * tm),
+                    WorkoutSet(5, .65 * tm, 5)
                 )
             ),
             Workout(name,"Warmup then 3 x 3",
@@ -56,7 +56,8 @@ fun template531ForBeginners(tm: Double, name: String) = WorkoutTemplate (
                     WorkoutSet(5, .6 * tm),
                     WorkoutSet(3, .7 * tm),
                     WorkoutSet(3, .8 * tm),
-                    WorkoutSet(3, .9 * tm)
+                    WorkoutSet(3, .9 * tm),
+                    WorkoutSet(5, .7 * tm, 5)
                 )
             ),
             Workout(name,"Warmup then 5, 3, 1",
@@ -66,7 +67,8 @@ fun template531ForBeginners(tm: Double, name: String) = WorkoutTemplate (
                     WorkoutSet(5, .6 * tm),
                     WorkoutSet(5, .75 * tm),
                     WorkoutSet(3, .85 * tm),
-                    WorkoutSet(1, .95 * tm)
+                    WorkoutSet(1, .95 * tm),
+                    WorkoutSet(5, .75 * tm, 5)
                 )
             )
         )
