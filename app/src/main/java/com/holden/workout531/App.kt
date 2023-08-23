@@ -68,7 +68,7 @@ fun App() {
                         scope.launch{ drawerState.close() }
                     },
                     onDeletePlan = {
-
+                        viewModel.deletePlan(context, it)
                     }
                 )
             },
