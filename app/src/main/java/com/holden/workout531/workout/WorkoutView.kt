@@ -16,8 +16,9 @@ fun WorkoutView(workout: Workout){
         Text(text = workout.description)
         LazyColumn {
             items(workout.sets){
+                val setsText = if (it.sets > 1) "${it.sets} sets of " else ""
                 Text(
-                    text = "${it.weight}${LocalUnits.current.weightUnit} x ${it.reps}",
+                    text = "$setsText${it.weight}${LocalUnits.current.weightUnit} x ${it.reps}",
                     style = MaterialTheme.typography.labelLarge
                 )
             }
