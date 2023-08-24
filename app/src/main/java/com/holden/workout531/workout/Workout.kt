@@ -5,7 +5,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 @optics
-data class Workout(val name: String, val description: String = "", val sets: List<WorkoutSet>) {
+data class Workout(val name: String, val description: String = "", val sets: List<WorkoutSet>, val pr: Int? = null) {
     companion object
 }
 

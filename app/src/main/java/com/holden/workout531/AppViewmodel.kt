@@ -2,10 +2,17 @@ package com.holden.workout531
 
 import android.content.Context
 import androidx.lifecycle.ViewModel
+import arrow.optics.dsl.index
 import arrow.optics.optics
+import arrow.optics.typeclasses.Index
 import com.holden.workout531.utility.deletedAt
+import com.holden.workout531.utility.modifyNullable
+import com.holden.workout531.utility.set
+import com.holden.workout531.workout.nullablePr
 import com.holden.workout531.workoutPlan.PlanRepository
 import com.holden.workout531.workoutPlan.WorkoutPlan
+import com.holden.workout531.workoutPlan.templatesForDays
+import com.holden.workout531.workoutPlan.workoutsForPeriods
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
@@ -18,7 +25,9 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
     private val _currentPlanIndex = MutableStateFlow(repository.planState?.currentPlanIndex)
     val currentPlanIndex = _currentPlanIndex.asStateFlow()
 
-    private val _workoutPlan = MutableStateFlow(repository.planState?.currentPlanIndex?.let { repository.planState?.plans?.get(it) } )
+    private val _workoutPlan = MutableStateFlow(
+        repository.planState?.currentPlanIndex?.let { repository.planState?.plans?.get(it) }
+    )
     val workoutPlan = _workoutPlan.asStateFlow()
 
     private val _currentWorkoutIndex = MutableStateFlow<WorkoutIndex?>(null)
@@ -59,6 +68,27 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
             _currentPlanIndex.value = currentIndex - 1
         }
         _plans.value = plans.value.deletedAt(index)
+        persistPlans(context)
+    }
+
+    fun setPR(context: Context, day: Int, period: Int, index: Int, pr: Int?){
+        _workoutPlan.modifyNullable(
+            WorkoutPlan
+                .templatesForDays
+                .index(Index.list(), day)
+                .index(Index.list(), period)
+                .workoutsForPeriods
+                .index(Index.list(), index)
+                .nullablePr
+        ){
+            pr
+        }
+        val planIndex = currentPlanIndex.value
+        val plan = workoutPlan.value
+        if (planIndex != null && plan != null){
+            _plans.set(Index.list<WorkoutPlan>().index(planIndex), plan)
+        }
+
         persistPlans(context)
     }
 
