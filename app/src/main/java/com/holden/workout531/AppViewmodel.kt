@@ -76,9 +76,9 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
             WorkoutPlan
                 .templatesForDays
                 .index(Index.list(), day)
-                .index(Index.list(), period)
-                .workoutsForPeriods
                 .index(Index.list(), index)
+                .workoutsForPeriods
+                .index(Index.list(), period)
                 .nullablePr
         ){
             pr
