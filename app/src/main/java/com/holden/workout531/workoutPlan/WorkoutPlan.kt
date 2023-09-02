@@ -14,6 +14,14 @@ data class WorkoutPlan(
 ){
     fun workoutsForDay(day: Int, period: Int) = templatesForDays[day].map { it.workoutsForPeriods[period] }
 
+    fun prChartData() = List(periods.size){ periodIndex ->
+        periods[periodIndex] to List(days.size){ dayIndex ->
+            days[dayIndex] to List(templatesForDays[dayIndex].size){ workoutIndex ->
+                templatesForDays[dayIndex][workoutIndex].workoutsForPeriods[periodIndex]
+            }
+        }
+    }
+
     companion object
 }
 
