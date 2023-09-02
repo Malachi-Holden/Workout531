@@ -1,5 +1,6 @@
 package com.holden.workout531
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -35,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.holden.workout531.utility.Modal
 import com.holden.workout531.utility.viewModelWithLambda
 import com.holden.workout531.workoutPlan.ForBeginnersInitializeView
+import com.holden.workout531.workoutPlan.PRChartView
 import com.holden.workout531.workoutPlan.PlanListView
 import com.holden.workout531.workoutPlan.PlanRepository
 import com.holden.workout531.workoutPlan.WorkoutPlan
@@ -52,9 +54,9 @@ fun App() {
     LaunchedEffect(backStackEntry){
         drawerState.close()
     }
-    var showForBeginnersView by remember {
-        mutableStateOf(false)
-    }
+    var showForBeginnersView by remember { mutableStateOf(false) }
+    var showPRView by remember { mutableStateOf(false) }
+    val currentPlan by viewModel.workoutPlan.collectAsState()
     Box(modifier = Modifier.fillMaxSize()){
         ModalNavigationDrawer(
             drawerContent = {
@@ -76,13 +78,21 @@ fun App() {
         ) {
             Scaffold(
                 topBar = {
-                    TopAppBar(title = { Text(viewModel.workoutPlan.collectAsState().value?.name ?: "5/3/1") },
+                    TopAppBar(
+                        title = { Text(currentPlan?.name ?: "5/3/1") },
                         navigationIcon = {
                             AppBarIcon(
                                 backStackEntry = backStackEntry,
                                 onBack = { navController.popBackStack() },
                                 openDrawer = { scope.launch{ drawerState.open() } }
                             )
+                        },
+                        actions = {
+                            if (currentPlan != null) {
+                                Button(onClick = { showPRView = true }) {
+                                    Text(text = "View PRs")
+                                }
+                            }
                         }
                     )
                 }
@@ -96,13 +106,26 @@ fun App() {
             }
         }
     }
-    if (showForBeginnersView){
+    if (showForBeginnersView) {
         Modal(onClose = { showForBeginnersView = false }) {
             ForBeginnersInitializeView(onCreatePlan = { plan ->
                 viewModel.createPlan(context, plan)
                 showForBeginnersView = false
                 scope.launch { drawerState.close() }
             })
+        }
+    }
+    LaunchedEffect(showPRView){
+        if (currentPlan == null && showPRView){
+            Toast.makeText(context, "Select a plan to see PR chart", Toast.LENGTH_SHORT).show()
+        }
+    }
+    if (showPRView) {
+        val plan = currentPlan
+        if (plan != null) {
+            Modal(onClose = { showPRView = false }) {
+                PRChartView(chart = plan.prChartData())
+            }
         }
     }
 }

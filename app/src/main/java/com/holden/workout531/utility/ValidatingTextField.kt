@@ -27,8 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun DoubleTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    onValidate: (Double)->Unit,
-    onInvalid: ()->Unit,
+    onValidated: (Double?)->Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -52,8 +51,7 @@ fun DoubleTextField(
         value,
         onValueChange,
         { it.toDoubleOrNull() },
-        onValidate,
-        onInvalid,
+        onValidated,
         modifier,
         enabled,
         readOnly,
@@ -81,8 +79,7 @@ fun <R> ValidatingTextField(
     value: String,
     onValueChange: (String) -> Unit,
     validate: (String)->R?,
-    onValidate: (R)->Unit,
-    onInvalid: ()->Unit,
+    onValidated: (R?)->Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -106,8 +103,7 @@ fun <R> ValidatingTextField(
         value,
         {
             onValueChange(it)
-            val validated = validate(it)
-            validated?.let(onValidate) ?: onInvalid()
+            validate(it)?.let(onValidated)
         },
         modifier,
         enabled,
@@ -140,12 +136,48 @@ fun DoubleTextFieldPreview(){
         mutableStateOf(null)
     }
     Column {
-        DoubleTextField(value = doubleVal, onValueChange = setDoubleVal, onValidate = {
-            goodResult = it
-        },
-        onInvalid = { goodResult = null }
+        DoubleTextField(value = doubleVal, onValueChange = setDoubleVal, onValidated = {
+                goodResult = it
+            }
         )
         Text(text = goodResult.toString())
     }
 
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+@Preview
+fun ValidatingTextFieldTest(){
+    val (input, setInput) = remember {
+        mutableStateOf("")
+    }
+
+    TextField(
+        value = input,
+        onValueChange = setInput
+    )
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

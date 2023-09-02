@@ -47,12 +47,11 @@ fun ForBeginnersInitializeView(
         DoubleTextField(
             value = squatTM,
             onValueChange = setSquatTM,
-            onInvalid = {
-                squatValid = null
-            },
-            onValidate = {
+            onValidated = {
                 squatValid = it
-                squatError = false
+                if (it != null){
+                    squatError = false
+                }
             },
             placeholder = { Text(text = "Squat training max") },
             singleLine = true,
@@ -61,12 +60,11 @@ fun ForBeginnersInitializeView(
         DoubleTextField(
             value = benchTM,
             onValueChange = setBenchTM,
-            onInvalid = {
-                benchValid = null
-            },
-            onValidate = {
+            onValidated = {
                 benchValid = it
-                benchError = false
+                if (it != null){
+                    benchError = false
+                }
             },
             placeholder = { Text(text = "Bench press training max") },
             singleLine = true,
@@ -75,12 +73,11 @@ fun ForBeginnersInitializeView(
         DoubleTextField(
             value = deadliftTM,
             onValueChange = setDeadliftTM,
-            onInvalid = {
-                deadliftValid = null
-            },
-            onValidate = {
+            onValidated = {
                 deadliftValid = it
-                deadliftError = false
+                if (it != null){
+                    deadliftError = false
+                }
             },
             placeholder = { Text(text = "Deadlift training max") },
             singleLine = true,
@@ -89,12 +86,11 @@ fun ForBeginnersInitializeView(
         DoubleTextField(
             value = overheadTM,
             onValueChange = setOverheadTM,
-            onInvalid = {
-                overheadValid = null
-            },
-            onValidate = {
+            onValidated = {
                 overheadValid = it
-                overheadError = false
+                if (it != null){
+                    overheadError = false
+                }
             },
             placeholder = { Text(text = "Overhead press training max") },
             singleLine = true,

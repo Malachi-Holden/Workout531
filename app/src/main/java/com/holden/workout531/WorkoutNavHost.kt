@@ -53,7 +53,7 @@ fun WorkoutNavHost(navController: NavHostController){
             val index by viewModel.currentWorkoutIndex.collectAsState()
             val (day, period, i) = index ?: return@composable // use empty view instead
             val workout = plan?.workoutsForDay(day, period)?.get(i) ?: return@composable
-            WorkoutView(workout = workout)
+            WorkoutView(workout = workout, onSavePR = { viewModel.setPR(context, day, period, i, it) })
         }
     }
 }
