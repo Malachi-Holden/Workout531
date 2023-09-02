@@ -15,7 +15,7 @@ import com.holden.workout531.workout.Workout
 import com.holden.workout531.workout.pr
 
 @Composable
-fun PRChartView(chart: List<Pair<String, List<Pair<String, List<Workout>>>>>){
+fun PRChartView(chart: List<Pair<String, List<Pair<String, List<Pair<String, Int>>>>>>){
     LazyRow {
         items(chart){period ->
             PeriodView(period.first, period.second)
@@ -24,7 +24,7 @@ fun PRChartView(chart: List<Pair<String, List<Pair<String, List<Workout>>>>>){
 }
 
 @Composable
-fun PeriodView(periodName: String, period: List<Pair<String, List<Workout>>>){
+fun PeriodView(periodName: String, period: List<Pair<String, List<Pair<String, Int>>>>){
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(horizontal = 10.dp)
@@ -37,14 +37,12 @@ fun PeriodView(periodName: String, period: List<Pair<String, List<Workout>>>){
                 ) {
                     Row {
                         for (workout in day.second){
-                            workout.pr?.let {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    modifier = Modifier.padding(horizontal = 10.dp)
-                                ){
-                                    Text(text = "PR: $it", modifier = Modifier.padding(horizontal = 10.dp))
-                                    Text(text = workout.name)
-                                }
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                modifier = Modifier.padding(horizontal = 10.dp)
+                            ){
+                                Text(text = "PR: ${workout.second}", modifier = Modifier.padding(horizontal = 10.dp))
+                                Text(text = workout.first)
                             }
                         }
                     }

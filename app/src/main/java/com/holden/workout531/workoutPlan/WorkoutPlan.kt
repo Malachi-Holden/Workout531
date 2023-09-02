@@ -17,10 +17,14 @@ data class WorkoutPlan(
     fun prChartData() = List(periods.size){ periodIndex ->
         periods[periodIndex] to List(days.size){ dayIndex ->
             days[dayIndex] to List(templatesForDays[dayIndex].size){ workoutIndex ->
-                templatesForDays[dayIndex][workoutIndex].workoutsForPeriods[periodIndex]
-            }
-        }
-    }
+                val workout = templatesForDays[dayIndex][workoutIndex].workoutsForPeriods[periodIndex]
+                workout.pr?.let {
+                    workout.name to it
+                }
+
+            }.filterNotNull()
+        }.filter { it.second.isNotEmpty() }
+    }.filter { it.second.isNotEmpty() }
 
     companion object
 }
