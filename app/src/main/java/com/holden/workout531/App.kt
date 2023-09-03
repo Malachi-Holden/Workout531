@@ -27,6 +27,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -106,42 +107,42 @@ fun App(viewModel: AppViewmodel) {
                     WorkoutNavHost(viewModel = viewModel, navController = navController, onShowCalculatePlates = {
                         calculatePlatesAmount = it
                     })
-
                 }
             }
         }
-    }
-    if (showForBeginnersView) {
-        Modal(onClose = { showForBeginnersView = false }) {
-            ForBeginnersInitializeView(onCreatePlan = { plan ->
-                viewModel.createPlan(context, plan)
-                showForBeginnersView = false
-                scope.launch { drawerState.close() }
-            })
+        if (showForBeginnersView) {
+            Modal(onClose = { showForBeginnersView = false }) {
+                ForBeginnersInitializeView(onCreatePlan = { plan ->
+                    viewModel.createPlan(context, plan)
+                    showForBeginnersView = false
+                    scope.launch { drawerState.close() }
+                })
+            }
         }
-    }
-    LaunchedEffect(showPRView){
-        if (currentPlan == null && showPRView){
-            Toast.makeText(context, "Select a plan to see PR chart", Toast.LENGTH_SHORT).show()
+        LaunchedEffect(showPRView){
+            if (currentPlan == null && showPRView){
+                Toast.makeText(context, "Select a plan to see PR chart", Toast.LENGTH_SHORT).show()
+            }
         }
-    }
-    if (showPRView) {
-        val plan = currentPlan
-        if (plan != null) {
-            Modal(onClose = { showPRView = false }) {
-                PRChartView(chart = plan.prChartData())
+        if (showPRView) {
+            val plan = currentPlan
+            if (plan != null) {
+                Modal(onClose = { showPRView = false }) {
+                    PRChartView(chart = plan.prChartData())
+                }
+            }
+        }
+        if (calculatePlatesAmount != null){
+            val plateSet by viewModel.plateSet.collectAsState()
+            Modal(onClose = { calculatePlatesAmount = null }) {
+                CalculatePlatesView(plateSet = plateSet, goalWeight = calculatePlatesAmount, openPreferences = {
+                    calculatePlatesAmount = null
+                    navController.navigate(Destination.Prefs.name)
+                })
             }
         }
     }
-    if (calculatePlatesAmount != null){
-        val plateSet by viewModel.plateSet.collectAsState()
-        Modal(onClose = { calculatePlatesAmount = null }) {
-            CalculatePlatesView(plateSet = plateSet, goalWeight = calculatePlatesAmount, openPreferences = {
-                calculatePlatesAmount = null
-                navController.navigate(Destination.Prefs.name)
-            })
-        }
-    }
+
 }
 
 fun appBarTitle(backStackEntry: NavBackStackEntry?, currentPlan: WorkoutPlan?, currentWorkout: Workout?) =

@@ -3,7 +3,12 @@ package com.holden.workout531
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import com.holden.workout531.preferences.Preferences531
 import com.holden.workout531.ui.theme.Workout531Theme
@@ -11,6 +16,7 @@ import com.holden.workout531.utility.viewModelWithLambda
 import com.holden.workout531.workoutPlan.PlanRepository
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val prefs = Preferences531.load(this)
@@ -20,7 +26,11 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalUnits provides prefs.units
                 ) {
-                   App(viewModel)
+                    Scaffold {
+                        Box(modifier = Modifier.padding(it)){
+                            App(viewModel)
+                        }
+                    }
                 }
             }
         }
