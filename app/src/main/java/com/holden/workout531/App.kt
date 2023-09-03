@@ -46,13 +46,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App() {
+fun App(viewModel: AppViewmodel) {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val backStackEntry by navController.currentBackStackEntryAsState()
     val context = LocalContext.current
-    val viewModel: AppViewmodel = viewModelWithLambda { AppViewmodel(PlanRepository(context)) }
     LaunchedEffect(backStackEntry){
         drawerState.close()
     }
@@ -103,7 +102,7 @@ fun App() {
                 Box(modifier = Modifier
                     .padding(it)
                     .padding(horizontal = 10.dp)){
-                    WorkoutNavHost(navController = navController, onShowCalculatePlates = {
+                    WorkoutNavHost(viewModel = viewModel, navController = navController, onShowCalculatePlates = {
                         calculatePlatesAmount = it
                     })
 
@@ -134,8 +133,9 @@ fun App() {
         }
     }
     if (calculatePlatesAmount != null){
+        val plateSet by viewModel.plateSet.collectAsState()
         Modal(onClose = { calculatePlatesAmount = null }) {
-            CalculatePlatesView(plateSet = testPlateSet, goalWeight = calculatePlatesAmount)
+            CalculatePlatesView(plateSet = plateSet, goalWeight = calculatePlatesAmount)
         }
     }
 }

@@ -1,8 +1,10 @@
 package com.holden.workout531.plates
 
 import arrow.optics.optics
+import kotlinx.serialization.Serializable
 import kotlin.math.abs
 
+@Serializable
 @optics
 data class PlateSet(val bar: Double?, val plates: List<Double>) {
     // plates should be sorted largest to smallest

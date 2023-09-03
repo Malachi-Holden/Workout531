@@ -29,9 +29,8 @@ enum class Destination() {
 fun String.routeToDestination() = Destination.valueOfOrNull(this)
 
 @Composable
-fun WorkoutNavHost(navController: NavHostController, onShowCalculatePlates: (Double)->Unit){
+fun WorkoutNavHost(viewModel: AppViewmodel, navController: NavHostController, onShowCalculatePlates: (Double)->Unit){
     val context = LocalContext.current
-    val viewModel: AppViewmodel = viewModelWithLambda { AppViewmodel(PlanRepository(context)) }
     val plan by viewModel.workoutPlan.collectAsState()
     NavHost(navController = navController, startDestination = Destination.Plan.name){
         composable(Destination.Plan.name){
