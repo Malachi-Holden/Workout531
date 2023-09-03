@@ -46,21 +46,21 @@ fun ForBeginnersInitializeView(
             onDoubleResult = {
                 benchTM = it
             },
-            placeholder = { Text(text = "Squat training max") },
+            placeholder = { Text(text = "Bench Press training max") },
             singleLine = true
         )
         DoubleTextField(
             onDoubleResult = {
                 deadliftTM = it
             },
-            placeholder = { Text(text = "Squat training max") },
+            placeholder = { Text(text = "Deadlift training max") },
             singleLine = true
         )
         DoubleTextField(
             onDoubleResult = {
                 overheadTM = it
             },
-            placeholder = { Text(text = "Squat training max") },
+            placeholder = { Text(text = "Overhead Press training max") },
             singleLine = true
         )
         Button(

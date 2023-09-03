@@ -45,7 +45,6 @@ fun WorkoutView(workout: Workout, onSavePR: (Int?)->Unit, onShowCalculatePlates:
 }
 
 @Composable
-@OptIn(ExperimentalMaterial3Api::class)
 private fun ValidatePR(pr: Int?, onSavePR: (Int?) -> Unit) {
     var resultPR: Int? by remember { mutableStateOf(null) }
     var prIsCorrect by remember { mutableStateOf(true) }
