@@ -68,6 +68,10 @@ class AppViewmodel(val repository: PlanRepository, preferences: Preferences531):
         _currentWorkoutIndex.value = index
     }
 
+    fun currentWorkout() = currentWorkoutIndex.value?.let { (day, period, i) ->
+        workoutPlan.value?.workoutsForDay(day, period)?.get(i)
+    }
+
     fun deletePlan(context: Context, index: Int){
         if (workoutPlan.value == plans.value.getOrNull(index)){
             _workoutPlan.value = null

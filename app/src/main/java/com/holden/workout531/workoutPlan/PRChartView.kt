@@ -26,6 +26,10 @@ import com.holden.workout531.workout.pr
 
 @Composable
 fun PRChartView(chart: List<Pair<String, List<Pair<String, List<Pair<String, Int>>>>>>){
+    if (chart.isEmpty()) {
+        Text(text = "No PRs")
+        return
+    }
     LazyColumn {
         items(chart.size - 1){
             val period = chart[it]

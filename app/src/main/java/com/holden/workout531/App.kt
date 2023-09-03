@@ -34,13 +34,11 @@ import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.holden.workout531.plates.CalculatePlatesView
-import com.holden.workout531.plates.testPlateSet
 import com.holden.workout531.utility.Modal
-import com.holden.workout531.utility.viewModelWithLambda
+import com.holden.workout531.workout.Workout
 import com.holden.workout531.workoutPlan.ForBeginnersInitializeView
 import com.holden.workout531.workoutPlan.PRChartView
 import com.holden.workout531.workoutPlan.PlanListView
-import com.holden.workout531.workoutPlan.PlanRepository
 import com.holden.workout531.workoutPlan.WorkoutPlan
 import kotlinx.coroutines.launch
 
@@ -84,7 +82,7 @@ fun App(viewModel: AppViewmodel) {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text(currentPlan?.name ?: "5/3/1") },
+                        title = { Text(appBarTitle(backStackEntry, currentPlan, viewModel.currentWorkout())) },
                         navigationIcon = {
                             AppBarIcon(
                                 backStackEntry = backStackEntry,
@@ -146,6 +144,16 @@ fun App(viewModel: AppViewmodel) {
     }
 }
 
+fun appBarTitle(backStackEntry: NavBackStackEntry?, currentPlan: WorkoutPlan?, currentWorkout: Workout?) =
+    when (backStackEntry?.destination?.route){
+        Destination.Detail.name -> currentWorkout?.name ?: "5/3/1"
+
+        Destination.Prefs.name -> "Preferences"
+
+        else -> currentPlan?.name ?: "5/3/1" // also for Destination.Plan
+
+
+    }
 @Composable
 fun AppBarIcon(backStackEntry: NavBackStackEntry?, onBack: ()->Unit, openDrawer: ()->Unit){
     when (backStackEntry?.destination?.route){
@@ -153,11 +161,11 @@ fun AppBarIcon(backStackEntry: NavBackStackEntry?, onBack: ()->Unit, openDrawer:
             IconButton(onClick = openDrawer) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Back"
+                    contentDescription = "Open Drawer"
                 )
             }
         }
-        Destination.Detail.name -> {
+        Destination.Detail.name, Destination.Prefs.name -> {
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,

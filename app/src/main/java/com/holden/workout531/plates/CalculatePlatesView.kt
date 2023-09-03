@@ -66,7 +66,7 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null, openPref
             Row(horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()) {
                 if (calc.lowSet != null){
-                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp)) {
+                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp).weight(1f)) {
                         item {
                             val text = if (calc.exact) {
                                 "Exact result"
@@ -81,7 +81,7 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null, openPref
                     }
                 }
                 if (calc.highSet != null && !calc.exact) {
-                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp)) {
+                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp).weight(1f)) {
                         item {
                             Text(text = "High estimate ${calc.highError} $weightUnits over")
                         }
@@ -99,13 +99,6 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null, openPref
     }
 }
 
-val testPlateSet = PlateSet(
-    bar = 45.0,
-    plates = listOf(
-        25.0, 15.0, 10.0, 5.0
-    )
-)
-
 @Composable
 @Preview
 fun CalculatePlatesPreviewAprox(){
@@ -116,8 +109,7 @@ fun CalculatePlatesPreviewAprox(){
                 25.0, 15.0, 10.0, 5.0
             )
         ),
-//        goalWeight = 117.0
-    openPreferences = {}
+        openPreferences = {}
     )
 }
 
