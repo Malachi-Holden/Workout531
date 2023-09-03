@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 fun DoubleTextField(
     value: String,
     onValueChange: (String) -> Unit,
-    onValidated: (Double?)->Unit,
+    onValidated: (Double)->Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,
@@ -79,7 +79,7 @@ fun <R> ValidatingTextField(
     value: String,
     onValueChange: (String) -> Unit,
     validate: (String)->R?,
-    onValidated: (R?)->Unit,
+    onValidated: (R)->Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     readOnly: Boolean = false,

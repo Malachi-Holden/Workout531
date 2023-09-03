@@ -33,30 +33,30 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.holden.workout531.plates.CalculatePlatesView
 import com.holden.workout531.utility.Modal
-import com.holden.workout531.utility.viewModelWithLambda
+import com.holden.workout531.workout.Workout
 import com.holden.workout531.workoutPlan.ForBeginnersInitializeView
 import com.holden.workout531.workoutPlan.PRChartView
 import com.holden.workout531.workoutPlan.PlanListView
-import com.holden.workout531.workoutPlan.PlanRepository
 import com.holden.workout531.workoutPlan.WorkoutPlan
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun App() {
+fun App(viewModel: AppViewmodel) {
     val scope = rememberCoroutineScope()
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val backStackEntry by navController.currentBackStackEntryAsState()
     val context = LocalContext.current
-    val viewModel: AppViewmodel = viewModelWithLambda { AppViewmodel(PlanRepository(context)) }
     LaunchedEffect(backStackEntry){
         drawerState.close()
     }
     var showForBeginnersView by remember { mutableStateOf(false) }
     var showPRView by remember { mutableStateOf(false) }
     val currentPlan by viewModel.workoutPlan.collectAsState()
+    var calculatePlatesAmount: Double? by remember { mutableStateOf(null) }
     Box(modifier = Modifier.fillMaxSize()){
         ModalNavigationDrawer(
             drawerContent = {
@@ -71,6 +71,9 @@ fun App() {
                     },
                     onDeletePlan = {
                         viewModel.deletePlan(context, it)
+                    },
+                    onOpenPrefs = {
+                        navController.navigate(Destination.Prefs.name)
                     }
                 )
             },
@@ -79,7 +82,7 @@ fun App() {
             Scaffold(
                 topBar = {
                     TopAppBar(
-                        title = { Text(currentPlan?.name ?: "5/3/1") },
+                        title = { Text(appBarTitle(backStackEntry, currentPlan, viewModel.currentWorkout())) },
                         navigationIcon = {
                             AppBarIcon(
                                 backStackEntry = backStackEntry,
@@ -100,7 +103,9 @@ fun App() {
                 Box(modifier = Modifier
                     .padding(it)
                     .padding(horizontal = 10.dp)){
-                    WorkoutNavHost(navController = navController)
+                    WorkoutNavHost(viewModel = viewModel, navController = navController, onShowCalculatePlates = {
+                        calculatePlatesAmount = it
+                    })
 
                 }
             }
@@ -128,8 +133,27 @@ fun App() {
             }
         }
     }
+    if (calculatePlatesAmount != null){
+        val plateSet by viewModel.plateSet.collectAsState()
+        Modal(onClose = { calculatePlatesAmount = null }) {
+            CalculatePlatesView(plateSet = plateSet, goalWeight = calculatePlatesAmount, openPreferences = {
+                calculatePlatesAmount = null
+                navController.navigate(Destination.Prefs.name)
+            })
+        }
+    }
 }
 
+fun appBarTitle(backStackEntry: NavBackStackEntry?, currentPlan: WorkoutPlan?, currentWorkout: Workout?) =
+    when (backStackEntry?.destination?.route){
+        Destination.Detail.name -> currentWorkout?.name ?: "5/3/1"
+
+        Destination.Prefs.name -> "Preferences"
+
+        else -> currentPlan?.name ?: "5/3/1" // also for Destination.Plan
+
+
+    }
 @Composable
 fun AppBarIcon(backStackEntry: NavBackStackEntry?, onBack: ()->Unit, openDrawer: ()->Unit){
     when (backStackEntry?.destination?.route){
@@ -137,11 +161,11 @@ fun AppBarIcon(backStackEntry: NavBackStackEntry?, onBack: ()->Unit, openDrawer:
             IconButton(onClick = openDrawer) {
                 Icon(
                     imageVector = Icons.Filled.Menu,
-                    contentDescription = "Back"
+                    contentDescription = "Open Drawer"
                 )
             }
         }
-        Destination.Detail.name -> {
+        Destination.Detail.name, Destination.Prefs.name -> {
             IconButton(onClick = onBack) {
                 Icon(
                     imageVector = Icons.Filled.ArrowBack,
@@ -160,7 +184,8 @@ fun AppDrawer(
     planList: List<WorkoutPlan>,
     currentPlanIndex: Int?,
     onSelectPlan: (Int)->Unit,
-    onDeletePlan: (Int)->Unit
+    onDeletePlan: (Int)->Unit,
+    onOpenPrefs: ()->Unit
 ){
     ModalDrawerSheet {
         when (currentDestination){
@@ -178,5 +203,9 @@ fun AppDrawer(
             onSelect = onSelectPlan,
             onDelete = onDeletePlan
         )
+        Divider()
+        Button(onClick = onOpenPrefs) {
+            Text(text = "User Preferences")
+        }
     }
 }

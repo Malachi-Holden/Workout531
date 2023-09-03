@@ -3,24 +3,24 @@ package com.holden.workout531
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
+import com.holden.workout531.preferences.Preferences531
 import com.holden.workout531.ui.theme.Workout531Theme
+import com.holden.workout531.utility.viewModelWithLambda
+import com.holden.workout531.workoutPlan.PlanRepository
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val prefs = Preferences531.load(this)
         setContent {
+            val viewModel: AppViewmodel = viewModelWithLambda { AppViewmodel(PlanRepository(this), prefs) }
             Workout531Theme {
-                CompositionLocalProvider(LocalUnits provides Units(weightUnit = "lbs")) {
-                   App()
+                CompositionLocalProvider(
+                    LocalUnits provides prefs.units
+                ) {
+                   App(viewModel)
                 }
             }
         }

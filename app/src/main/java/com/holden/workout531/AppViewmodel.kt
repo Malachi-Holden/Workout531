@@ -5,6 +5,8 @@ import androidx.lifecycle.ViewModel
 import arrow.optics.dsl.index
 import arrow.optics.optics
 import arrow.optics.typeclasses.Index
+import com.holden.workout531.plates.PlateSet
+import com.holden.workout531.preferences.Preferences531
 import com.holden.workout531.utility.deletedAt
 import com.holden.workout531.utility.modifyNullable
 import com.holden.workout531.utility.set
@@ -16,7 +18,7 @@ import com.holden.workout531.workoutPlan.workoutsForPeriods
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class AppViewmodel(val repository: PlanRepository): ViewModel() {
+class AppViewmodel(val repository: PlanRepository, preferences: Preferences531): ViewModel() {
     private val _plans = MutableStateFlow(
         repository.planState?.plans ?: listOf()
     )
@@ -36,6 +38,14 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
     private val _focusedPeriod = MutableStateFlow<Int?>(null)
     val focusedPeriod = _focusedPeriod.asStateFlow()
 
+    private val _plateSet = MutableStateFlow(preferences.plateSet)
+    val plateSet = _plateSet.asStateFlow()
+
+    fun setPlateSet(context: Context, set: PlateSet){
+        _plateSet.value = set
+
+        Preferences531.load(context).copy(plateSet = set).save(context)
+    }
 
     fun createPlan(context: Context, plan: WorkoutPlan){
         _workoutPlan.value = plan
@@ -56,6 +66,10 @@ class AppViewmodel(val repository: PlanRepository): ViewModel() {
 
     fun setCurrentWorkoutIndex(index: WorkoutIndex){
         _currentWorkoutIndex.value = index
+    }
+
+    fun currentWorkout() = currentWorkoutIndex.value?.let { (day, period, i) ->
+        workoutPlan.value?.workoutsForDay(day, period)?.get(i)
     }
 
     fun deletePlan(context: Context, index: Int){

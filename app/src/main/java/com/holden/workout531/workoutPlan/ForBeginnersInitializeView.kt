@@ -49,9 +49,7 @@ fun ForBeginnersInitializeView(
             onValueChange = setSquatTM,
             onValidated = {
                 squatValid = it
-                if (it != null){
-                    squatError = false
-                }
+                squatError = false
             },
             placeholder = { Text(text = "Squat training max") },
             singleLine = true,
@@ -62,9 +60,7 @@ fun ForBeginnersInitializeView(
             onValueChange = setBenchTM,
             onValidated = {
                 benchValid = it
-                if (it != null){
-                    benchError = false
-                }
+                benchError = false
             },
             placeholder = { Text(text = "Bench press training max") },
             singleLine = true,
@@ -75,9 +71,7 @@ fun ForBeginnersInitializeView(
             onValueChange = setDeadliftTM,
             onValidated = {
                 deadliftValid = it
-                if (it != null){
-                    deadliftError = false
-                }
+                deadliftError = false
             },
             placeholder = { Text(text = "Deadlift training max") },
             singleLine = true,
@@ -88,9 +82,7 @@ fun ForBeginnersInitializeView(
             onValueChange = setOverheadTM,
             onValidated = {
                 overheadValid = it
-                if (it != null){
-                    overheadError = false
-                }
+                overheadError = false
             },
             placeholder = { Text(text = "Overhead press training max") },
             singleLine = true,

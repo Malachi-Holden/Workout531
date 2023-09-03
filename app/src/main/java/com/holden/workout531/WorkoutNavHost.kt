@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.holden.workout531.preferences.Preferences531
+import com.holden.workout531.preferences.PreferencesView
 import com.holden.workout531.utility.viewModelWithLambda
 import com.holden.workout531.workout.WorkoutView
 import com.holden.workout531.workoutPlan.PlanRepository
@@ -15,7 +17,7 @@ import com.holden.workout531.workoutPlan.WorkoutPlanNullableView
 import java.lang.IllegalArgumentException
 
 enum class Destination() {
-    Plan, Detail;
+    Plan, Detail, Prefs;
 
     companion object {
         fun valueOfOrNull(value: String) = try {
@@ -29,9 +31,8 @@ enum class Destination() {
 fun String.routeToDestination() = Destination.valueOfOrNull(this)
 
 @Composable
-fun WorkoutNavHost(navController: NavHostController){
+fun WorkoutNavHost(viewModel: AppViewmodel, navController: NavHostController, onShowCalculatePlates: (Double)->Unit){
     val context = LocalContext.current
-    val viewModel: AppViewmodel = viewModelWithLambda { AppViewmodel(PlanRepository(context)) }
     val plan by viewModel.workoutPlan.collectAsState()
     NavHost(navController = navController, startDestination = Destination.Plan.name){
         composable(Destination.Plan.name){
@@ -53,7 +54,11 @@ fun WorkoutNavHost(navController: NavHostController){
             val index by viewModel.currentWorkoutIndex.collectAsState()
             val (day, period, i) = index ?: return@composable // use empty view instead
             val workout = plan?.workoutsForDay(day, period)?.get(i) ?: return@composable
-            WorkoutView(workout = workout, onSavePR = { viewModel.setPR(context, day, period, i, it) })
+            WorkoutView(workout = workout, onSavePR = { viewModel.setPR(context, day, period, i, it) },
+            onShowCalculatePlates = onShowCalculatePlates)
+        }
+        composable(Destination.Prefs.name){
+            PreferencesView(preferences = Preferences531.load(context))
         }
     }
 }
