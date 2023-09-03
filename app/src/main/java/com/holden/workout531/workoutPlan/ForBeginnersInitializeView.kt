@@ -21,19 +21,19 @@ fun ForBeginnersInitializeView(
     onCreatePlan: (WorkoutPlan)->Unit
 ){
     val (planName, setPlanName) = remember { mutableStateOf("") }
-    val (squatTM, setSquatTM) = remember { mutableStateOf("") }
+    var squatTM by remember { mutableStateOf("") }
     var squatValid: Double? by remember { mutableStateOf(null) }
     var squatError by remember { mutableStateOf(false) }
 
-    val (benchTM, setBenchTM) = remember { mutableStateOf("") }
+    var benchTM by remember { mutableStateOf("") }
     var benchValid: Double? by remember { mutableStateOf(null) }
     var benchError by remember { mutableStateOf(false) }
 
-    val (deadliftTM, setDeadliftTM) = remember { mutableStateOf("") }
+    var deadliftTM by remember { mutableStateOf("") }
     var deadliftValid: Double? by remember { mutableStateOf(null) }
     var deadliftError by remember { mutableStateOf(false) }
 
-    val (overheadTM, setOverheadTM) = remember { mutableStateOf("") }
+    var overheadTM by remember { mutableStateOf("") }
     var overheadValid: Double? by remember { mutableStateOf(null) }
     var overheadError by remember { mutableStateOf(false) }
 
@@ -44,49 +44,49 @@ fun ForBeginnersInitializeView(
             placeholder = { Text(text = "Name of plan") },
             singleLine = true,
         )
-        DoubleTextField(
+        TextField(
             value = squatTM,
-            onValueChange = setSquatTM,
-            onValidated = {
-                squatValid = it
-                squatError = false
+            onValueChange = {
+                squatTM = it
+                squatValid = it.toDoubleOrNull()
+                if (squatValid != null) squatError = false
             },
             placeholder = { Text(text = "Squat training max") },
             singleLine = true,
             isError = squatError
         )
-        DoubleTextField(
+        TextField(
             value = benchTM,
-            onValueChange = setBenchTM,
-            onValidated = {
-                benchValid = it
-                benchError = false
+            onValueChange = {
+                benchTM = it
+                benchValid = it.toDoubleOrNull()
+                if (benchValid != null) benchError = false
             },
-            placeholder = { Text(text = "Bench press training max") },
+            placeholder = { Text(text = "Squat training max") },
             singleLine = true,
-            isError = benchError
+            isError = squatError
         )
-        DoubleTextField(
+        TextField(
             value = deadliftTM,
-            onValueChange = setDeadliftTM,
-            onValidated = {
-                deadliftValid = it
-                deadliftError = false
+            onValueChange = {
+                deadliftTM = it
+                deadliftValid = it.toDoubleOrNull()
+                if (deadliftValid != null) deadliftError = false
             },
-            placeholder = { Text(text = "Deadlift training max") },
+            placeholder = { Text(text = "Squat training max") },
             singleLine = true,
-            isError = deadliftError
+            isError = squatError
         )
-        DoubleTextField(
+        TextField(
             value = overheadTM,
-            onValueChange = setOverheadTM,
-            onValidated = {
-                overheadValid = it
-                overheadError = false
+            onValueChange = {
+                overheadTM = it
+                overheadValid = it.toDoubleOrNull()
+                if (overheadValid != null) overheadError = false
             },
-            placeholder = { Text(text = "Overhead press training max") },
+            placeholder = { Text(text = "Squat training max") },
             singleLine = true,
-            isError = overheadError
+            isError = squatError
         )
         val context = LocalContext.current
         Button(
