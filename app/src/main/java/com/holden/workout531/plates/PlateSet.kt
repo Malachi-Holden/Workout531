@@ -11,7 +11,13 @@ data class PlateSet(val bar: Double?, val plates: List<Double>) {
      * Uses a substandard but fast algorithm to find a set of plates that adds up to
      * something near the goal.
      */
-    fun calculatePlates(goal: Double): CalcResult {
+    fun calculatePlates(goal: Double): CalcResult { // doesn't work if goal is less than bar
+        bar?.let {
+            if (goal < it){
+                return CalcResult(null, null, listOf(), it - goal, false)
+            }
+        }
+
         val currentPlates: MutableList<Double> = mutableListOf()
         var total = bar ?: 0.0
         var lowError = abs(goal - total)
@@ -38,5 +44,5 @@ data class PlateSet(val bar: Double?, val plates: List<Double>) {
     companion object
 }
 
-data class CalcResult(val lowSet: List<Double>, val lowError: Double, val highSet: List<Double>?, val highError: Double?, val exact: Boolean = false)
+data class CalcResult(val lowSet: List<Double>?, val lowError: Double?, val highSet: List<Double>?, val highError: Double?, val exact: Boolean = false)
 

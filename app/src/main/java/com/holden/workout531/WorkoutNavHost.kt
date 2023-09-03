@@ -29,7 +29,7 @@ enum class Destination() {
 fun String.routeToDestination() = Destination.valueOfOrNull(this)
 
 @Composable
-fun WorkoutNavHost(navController: NavHostController){
+fun WorkoutNavHost(navController: NavHostController, onShowCalculatePlates: (Double)->Unit){
     val context = LocalContext.current
     val viewModel: AppViewmodel = viewModelWithLambda { AppViewmodel(PlanRepository(context)) }
     val plan by viewModel.workoutPlan.collectAsState()
@@ -53,7 +53,8 @@ fun WorkoutNavHost(navController: NavHostController){
             val index by viewModel.currentWorkoutIndex.collectAsState()
             val (day, period, i) = index ?: return@composable // use empty view instead
             val workout = plan?.workoutsForDay(day, period)?.get(i) ?: return@composable
-            WorkoutView(workout = workout, onSavePR = { viewModel.setPR(context, day, period, i, it) })
+            WorkoutView(workout = workout, onSavePR = { viewModel.setPR(context, day, period, i, it) },
+            onShowCalculatePlates = onShowCalculatePlates)
         }
     }
 }

@@ -36,7 +36,7 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null){
     var result: CalcResult? by remember { mutableStateOf(goalDouble?.let { plateSet.calculatePlates(it) }) }
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Text(text = "Calculate plates for")
+            Text(text = "Calculate plates for", modifier = Modifier.weight(6f))
             TextField(
                 value = goalWeightText,
                 onValueChange = {
@@ -45,15 +45,17 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null){
                    },
                 placeholder = { Text(text = "enter weight") },
                 modifier = Modifier
-                    .weight(3f)
+                    .weight(5f)
                     .padding(horizontal = 10.dp),
                 maxLines = 1
             )
 
-            Button(onClick = {
-                result = goalDouble?.let { plateSet.calculatePlates(it) }
-            },
-            modifier = Modifier.weight(1f)) {
+            Button(
+                onClick = {
+                    result = goalDouble?.let { plateSet.calculatePlates(it) }
+                },
+                modifier = Modifier.weight(3f)
+            ) {
                 Text(text = "Go")
             }
         }
@@ -63,26 +65,27 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null){
             Text(text = "Bar: $barAmount $weightUnits")
             Row(horizontalArrangement = Arrangement.Center,
             modifier = Modifier.fillMaxWidth()) {
-                LazyColumn(modifier = Modifier.padding(horizontal = 5.dp)) {
-                    item {
-                        val text = if (calc.exact) {
-                            "Exact result"
-                        } else {
-                            "Low estimate: ${calc.lowError} $weightUnits under"
+                if (calc.lowSet != null){
+                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp)) {
+                        item {
+                            val text = if (calc.exact) {
+                                "Exact result"
+                            } else {
+                                "Low estimate: ${calc.lowError} $weightUnits under"
+                            }
+                            Text(text = text)
                         }
-                        Text(text = text)
-                    }
-                    items(calc.lowSet){
-                        Text(text = "2 x $it $weightUnits")
+                        items(calc.lowSet){
+                            Text(text = "2 x $it $weightUnits")
+                        }
                     }
                 }
-                val highSet = calc.highSet
-                if (highSet != null && !calc.exact) {
+                if (calc.highSet != null && !calc.exact) {
                     LazyColumn(modifier = Modifier.padding(horizontal = 5.dp)) {
                         item {
                             Text(text = "High estimate ${calc.highError} $weightUnits over")
                         }
-                        items(highSet){
+                        items(calc.highSet){
                             Text(text = "2 x $it $weightUnits")
                         }
                     }
@@ -92,6 +95,13 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null){
         }
     }
 }
+
+val testPlateSet = PlateSet(
+    bar = 45.0,
+    plates = listOf(
+        25.0, 15.0, 10.0, 5.0
+    )
+)
 
 @Composable
 @Preview

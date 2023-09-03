@@ -1,6 +1,9 @@
 package com.holden.workout531.workout
 
 import android.widget.Toast
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
@@ -15,13 +18,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
 import com.holden.workout531.LocalUnits
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun WorkoutView(workout: Workout, onSavePR: (Int?)->Unit){
+fun WorkoutView(workout: Workout, onSavePR: (Int?)->Unit, onShowCalculatePlates: (Double)->Unit){
     Column {
         Text(text = workout.name, style = MaterialTheme.typography.titleLarge)
         Text(text = workout.description)
@@ -30,7 +35,10 @@ fun WorkoutView(workout: Workout, onSavePR: (Int?)->Unit){
                 val setsText = if (it.sets > 1) "${it.sets} sets of " else ""
                 Text(
                     text = "$setsText${it.weight}${LocalUnits.current.weightUnit} x ${it.reps}",
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    modifier = Modifier.combinedClickable(onClick = {}, onLongClick = {
+                        onShowCalculatePlates(it.weight)
+                    })
                 )
             }
         }
@@ -88,6 +96,6 @@ fun WorkoutPreview(){
         )),
         onSavePR = {
 
-        }
+        }, {}
     )
 }

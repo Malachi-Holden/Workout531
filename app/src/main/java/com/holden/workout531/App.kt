@@ -33,6 +33,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.holden.workout531.plates.CalculatePlatesView
+import com.holden.workout531.plates.testPlateSet
 import com.holden.workout531.utility.Modal
 import com.holden.workout531.utility.viewModelWithLambda
 import com.holden.workout531.workoutPlan.ForBeginnersInitializeView
@@ -57,6 +59,7 @@ fun App() {
     var showForBeginnersView by remember { mutableStateOf(false) }
     var showPRView by remember { mutableStateOf(false) }
     val currentPlan by viewModel.workoutPlan.collectAsState()
+    var calculatePlatesAmount: Double? by remember { mutableStateOf(null) }
     Box(modifier = Modifier.fillMaxSize()){
         ModalNavigationDrawer(
             drawerContent = {
@@ -100,7 +103,9 @@ fun App() {
                 Box(modifier = Modifier
                     .padding(it)
                     .padding(horizontal = 10.dp)){
-                    WorkoutNavHost(navController = navController)
+                    WorkoutNavHost(navController = navController, onShowCalculatePlates = {
+                        calculatePlatesAmount = it
+                    })
 
                 }
             }
@@ -126,6 +131,11 @@ fun App() {
             Modal(onClose = { showPRView = false }) {
                 PRChartView(chart = plan.prChartData())
             }
+        }
+    }
+    if (calculatePlatesAmount != null){
+        Modal(onClose = { calculatePlatesAmount = null }) {
+            CalculatePlatesView(plateSet = testPlateSet, goalWeight = calculatePlatesAmount)
         }
     }
 }
