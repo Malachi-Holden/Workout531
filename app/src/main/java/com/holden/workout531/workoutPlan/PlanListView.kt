@@ -3,6 +3,7 @@ package com.holden.workout531.workoutPlan
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -16,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -25,10 +27,11 @@ fun PlanListView(plans: List<WorkoutPlan>, currentIndex: Int?, onSelect: (Int)->
     LazyColumn{
         items(plans.size){
             Row(
-                modifier = Modifier.combinedClickable(
+                modifier = Modifier.fillMaxWidth().combinedClickable(
                     onClick = { onSelect(it) },
                     onLongClick = { deleteCandidate = if (deleteCandidate == it) null else it }
-                )
+                ),
+                verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(text = plans[it].name,
                     style = if (currentIndex == it) {

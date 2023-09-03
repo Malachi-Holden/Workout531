@@ -12,7 +12,6 @@ import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableDoubleStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -25,10 +24,9 @@ import androidx.compose.ui.tooling.preview.Preview
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DoubleTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    onValidated: (Double)->Unit,
+    onDoubleResult: (Double?)->Unit,
     modifier: Modifier = Modifier,
+    initialValue: String = "",
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
@@ -37,7 +35,6 @@ fun DoubleTextField(
     leadingIcon: @Composable (() -> Unit)? = null,
     trailingIcon: @Composable (() -> Unit)? = null,
     supportingText: @Composable (() -> Unit)? = null,
-    isError: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -48,48 +45,45 @@ fun DoubleTextField(
     colors: TextFieldColors = TextFieldDefaults.textFieldColors()
 ){
     ValidatingTextField(
-        value,
-        onValueChange,
         { it.toDoubleOrNull() },
-        onValidated,
+        onDoubleResult,
         modifier,
-        enabled,
-        readOnly,
-        textStyle,
-        label,
-        placeholder,
-        leadingIcon,
-        trailingIcon,
-        supportingText,
-        isError,
-        visualTransformation,
-        keyboardOptions,
-        keyboardActions,
-        singleLine,
-        maxLines,
-        interactionSource,
-        shape,
-        colors
+        initialValue,
+        enabled = enabled,
+        readOnly = readOnly,
+        textStyle = textStyle,
+        label = label,
+        placeholder = placeholder,
+        leadingIcon = leadingIcon,
+        trailingIcon = trailingIcon,
+        supportingText = supportingText,
+        visualTransformation = visualTransformation,
+        keyboardOptions = keyboardOptions,
+        keyboardActions = keyboardActions,
+        singleLine = singleLine,
+        maxLines = maxLines,
+        interactionSource = interactionSource,
+        shape = shape,
+        colors = colors
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun <R> ValidatingTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    validate: (String)->R?,
-    onValidated: (R)->Unit,
+    transform: (String) -> R?,
+    onTransform: (R?) -> Unit,
     modifier: Modifier = Modifier,
+    initialValue: String = "",
+    validate: (String) -> Boolean = { transform(it) != null },
     enabled: Boolean = true,
     readOnly: Boolean = false,
     textStyle: TextStyle = LocalTextStyle.current,
-    label: @Composable (() -> Unit)? = null,
-    placeholder: @Composable (() -> Unit)? = null,
-    leadingIcon: @Composable (() -> Unit)? = null,
-    trailingIcon: @Composable (() -> Unit)? = null,
-    supportingText: @Composable (() -> Unit)? = null,
-    isError: Boolean = false,
+    label: @Composable() (() -> Unit)? = null,
+    placeholder: @Composable() (() -> Unit)? = null,
+    leadingIcon: @Composable() (() -> Unit)? = null,
+    trailingIcon: @Composable() (() -> Unit)? = null,
+    supportingText: @Composable() (() -> Unit)? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     keyboardActions: KeyboardActions = KeyboardActions.Default,
@@ -99,11 +93,25 @@ fun <R> ValidatingTextField(
     shape: Shape = TextFieldDefaults.filledShape,
     colors: TextFieldColors = TextFieldDefaults.textFieldColors()
 ){
+    var value by remember {
+        mutableStateOf(initialValue)
+    }
+    var isError by remember {
+        mutableStateOf(false)
+    }
     TextField(
         value,
         {
-            onValueChange(it)
-            validate(it)?.let(onValidated)
+            val wasCorrect = validate(value)
+            value = it
+            onTransform(transform(it))
+            val isCorrect = validate(it)
+            if ((wasCorrect || it.isNotEmpty()) && !isCorrect){
+                isError = true
+            }
+            if (isCorrect){
+                isError = false
+            }
         },
         modifier,
         enabled,
@@ -129,34 +137,29 @@ fun <R> ValidatingTextField(
 @Composable
 @Preview
 fun DoubleTextFieldPreview(){
-    val (doubleVal, setDoubleVal) = remember {
-        mutableStateOf("0.0")
-    }
     var goodResult: Double? by remember {
         mutableStateOf(null)
     }
     Column {
-        DoubleTextField(value = doubleVal, onValueChange = setDoubleVal, onValidated = {
-                goodResult = it
-            }
-        )
+        DoubleTextField(initialValue = "0.0", onDoubleResult = {
+            goodResult = it
+        })
         Text(text = goodResult.toString())
     }
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
 fun ValidatingTextFieldTest(){
-    val (input, setInput) = remember {
-        mutableStateOf("")
+    var intResult: Int? by remember {
+        mutableStateOf(null)
     }
-
-    TextField(
-        value = input,
-        onValueChange = setInput
-    )
+    ValidatingTextField(transform = {
+        it.toIntOrNull()
+    }, onTransform = {
+        intResult = it
+    })
 }
 
 
