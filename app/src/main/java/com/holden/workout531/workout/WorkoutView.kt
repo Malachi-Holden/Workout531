@@ -2,7 +2,6 @@ package com.holden.workout531.workout
 
 import android.widget.Toast
 import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -28,7 +27,6 @@ import com.holden.workout531.LocalUnits
 @Composable
 fun WorkoutView(workout: Workout, onSavePR: (Int?)->Unit, onShowCalculatePlates: (Double)->Unit){
     Column {
-        Text(text = workout.name, style = MaterialTheme.typography.titleLarge)
         Text(text = workout.description)
         LazyColumn {
             items(workout.sets){
