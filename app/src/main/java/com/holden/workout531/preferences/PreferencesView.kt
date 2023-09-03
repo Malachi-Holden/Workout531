@@ -1,5 +1,6 @@
 package com.holden.workout531.preferences
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.lazy.LazyColumn
@@ -38,7 +39,10 @@ fun PreferencesView(preferences: Preferences531){
         }
         Text(text = "Available weights")
         SelectPlatesView(plateSet = plateSet, onPlateSetChanged = setPlateSet)
-        Button(onClick = { Preferences531(Units(weightUnits), plateSet).save(context) }) {
+        Button(onClick = {
+            Preferences531(Units(weightUnits), plateSet).save(context)
+            Toast.makeText(context, "Preferences Saved!", Toast.LENGTH_SHORT).show()
+        }) {
             Text(text = "Save preferences")
         }
     }

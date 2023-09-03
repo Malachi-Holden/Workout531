@@ -25,7 +25,7 @@ import com.holden.workout531.LocalUnits
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null){
+fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null, openPreferences: ()->Unit){
     var goalWeightText by remember { mutableStateOf("") }
     if (goalWeight != null){
         LaunchedEffect(Unit){
@@ -93,6 +93,9 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null){
 
             }
         }
+        Button(onClick = openPreferences) {
+            Text(text = "Update available weights in preferences")
+        }
     }
 }
 
@@ -114,6 +117,7 @@ fun CalculatePlatesPreviewAprox(){
             )
         ),
 //        goalWeight = 117.0
+    openPreferences = {}
     )
 }
 
@@ -127,6 +131,7 @@ fun CalculatePlatesPreviewExact(){
                 25.0, 15.0, 10.0, 5.0
             )
         ),
-        goalWeight = 115.0
+        goalWeight = 115.0,
+        openPreferences = {}
     )
 }

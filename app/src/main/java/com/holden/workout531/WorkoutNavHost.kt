@@ -8,6 +8,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.holden.workout531.preferences.Preferences531
+import com.holden.workout531.preferences.PreferencesView
 import com.holden.workout531.utility.viewModelWithLambda
 import com.holden.workout531.workout.WorkoutView
 import com.holden.workout531.workoutPlan.PlanRepository
@@ -15,7 +17,7 @@ import com.holden.workout531.workoutPlan.WorkoutPlanNullableView
 import java.lang.IllegalArgumentException
 
 enum class Destination() {
-    Plan, Detail;
+    Plan, Detail, Prefs;
 
     companion object {
         fun valueOfOrNull(value: String) = try {
@@ -54,6 +56,9 @@ fun WorkoutNavHost(viewModel: AppViewmodel, navController: NavHostController, on
             val workout = plan?.workoutsForDay(day, period)?.get(i) ?: return@composable
             WorkoutView(workout = workout, onSavePR = { viewModel.setPR(context, day, period, i, it) },
             onShowCalculatePlates = onShowCalculatePlates)
+        }
+        composable(Destination.Prefs.name){
+            PreferencesView(preferences = Preferences531.load(context))
         }
     }
 }

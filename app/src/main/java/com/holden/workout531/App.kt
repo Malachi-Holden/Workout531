@@ -73,6 +73,9 @@ fun App(viewModel: AppViewmodel) {
                     },
                     onDeletePlan = {
                         viewModel.deletePlan(context, it)
+                    },
+                    onOpenPrefs = {
+                        navController.navigate(Destination.Prefs.name)
                     }
                 )
             },
@@ -135,7 +138,10 @@ fun App(viewModel: AppViewmodel) {
     if (calculatePlatesAmount != null){
         val plateSet by viewModel.plateSet.collectAsState()
         Modal(onClose = { calculatePlatesAmount = null }) {
-            CalculatePlatesView(plateSet = plateSet, goalWeight = calculatePlatesAmount)
+            CalculatePlatesView(plateSet = plateSet, goalWeight = calculatePlatesAmount, openPreferences = {
+                calculatePlatesAmount = null
+                navController.navigate(Destination.Prefs.name)
+            })
         }
     }
 }
@@ -170,7 +176,8 @@ fun AppDrawer(
     planList: List<WorkoutPlan>,
     currentPlanIndex: Int?,
     onSelectPlan: (Int)->Unit,
-    onDeletePlan: (Int)->Unit
+    onDeletePlan: (Int)->Unit,
+    onOpenPrefs: ()->Unit
 ){
     ModalDrawerSheet {
         when (currentDestination){
@@ -188,5 +195,9 @@ fun AppDrawer(
             onSelect = onSelectPlan,
             onDelete = onDeletePlan
         )
+        Divider()
+        Button(onClick = onOpenPrefs) {
+            Text(text = "User Preferences")
+        }
     }
 }
