@@ -2,8 +2,10 @@ package com.holden.workout531.workoutPlan
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -19,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -28,20 +31,27 @@ fun PlanListView(plans: List<WorkoutPlan>, currentIndex: Int?, onSelect: (Int)->
         items(plans.size){
             Row(
                 modifier = Modifier.fillMaxWidth().combinedClickable(
-                    onClick = { onSelect(it) },
+                    onClick = {
+                        onSelect(it)
+                    },
                     onLongClick = { deleteCandidate = if (deleteCandidate == it) null else it }
-                ),
-                verticalAlignment = Alignment.CenterVertically
+                ).fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(text = plans[it].name,
                     style = if (currentIndex == it) {
                         MaterialTheme.typography.labelLarge
                     } else {
                         MaterialTheme.typography.labelMedium
-                    }
+                    },
+                    modifier = Modifier.padding(10.dp)
                 )
                 if (deleteCandidate == it){
-                    IconButton(onClick = { onDelete(it) }) {
+                    IconButton(onClick = {
+                        onDelete(it)
+                        deleteCandidate = null
+                    }) {
                         Icon(imageVector = Icons.Filled.Delete, contentDescription = "delete")
                     }
                 }
