@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -42,14 +43,14 @@ fun WorkoutPlanView(workoutPlan: WorkoutPlan, focusedPeriod: Int?, setFocusedPer
             Column(
                 modifier = Modifier.clickable {
                     setFocusedPeriod(if (focusedPeriod == it) null else it)
-                }
+                }.fillMaxWidth()
             ) {
                 val periodTitleStyle = if (focusedPeriod == it) {
                     MaterialTheme.typography.titleLarge
                 } else {
                     MaterialTheme.typography.labelLarge
                 }
-                Text(text = workoutPlan.periods[it], style = periodTitleStyle)
+                Text(text = workoutPlan.periods[it], style = periodTitleStyle, modifier = Modifier.padding(10.dp))
 
                 if (focusedPeriod == it){
                     WorkoutPeriodView(it, workoutPlan, onWorkoutClicked = onWorkoutClicked)
@@ -72,9 +73,9 @@ fun WorkoutPeriodView(period: Int, workoutPlan: WorkoutPlan, onWorkoutClicked: (
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable {
                             onWorkoutClicked(dayIndex, period, workoutIndex)
-                        }
+                        }.fillMaxWidth()
                     ) {
-                        Text(text = workouts[workoutIndex].name, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(5.dp))
+                        Text(text = workouts[workoutIndex].name, style = MaterialTheme.typography.labelLarge, modifier = Modifier.padding(10.dp))
                         Text(text = workouts[workoutIndex].description)
                     }
                 }
