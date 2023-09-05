@@ -18,6 +18,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import com.holden.workout531.Units
@@ -99,7 +100,8 @@ fun ChooseDoubleView(onChosen: (Double)->Unit, buttonText: String, default: Doub
             onValueChange = {
                 barText = it
                 barWeight = it.toDoubleOrNull()
-            }
+            },
+            modifier = Modifier.weight(1f)
         )
         Button(
             onClick = {

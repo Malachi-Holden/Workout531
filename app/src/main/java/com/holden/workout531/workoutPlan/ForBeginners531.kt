@@ -7,9 +7,9 @@ import com.holden.workout531.workout.WorkoutSet
 fun forBeginners531(
     planName: String,
     squatTM: Double,
+    benchTM: Double,
     deadliftTM: Double,
-    overheadTM: Double,
-    benchTM: Double
+    overheadTM: Double
 ) = WorkoutPlan(
     name = planName,
     periods = listOf(
