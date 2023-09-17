@@ -22,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.holden.workout531.LocalUnits
+import com.holden.workout531.utility.roundTo
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -33,7 +34,8 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null, openPref
         }
     }
     var goalDouble by remember { mutableStateOf(goalWeight) }
-    var result: CalcResult? by remember { mutableStateOf(goalDouble?.let { plateSet.calculatePlates(it) }) }
+    var underEstimate: CalcResult? by remember { mutableStateOf(goalDouble?.let { plateSet.calculateUnderEstimate(it) }) }
+    var overEstimate: CalcResult? by remember { mutableStateOf(goalDouble?.let { plateSet.calculateOverEstimate(it) }) }
     Column {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(text = "Calculate plates for", modifier = Modifier.weight(6f))
@@ -52,46 +54,50 @@ fun CalculatePlatesView(plateSet: PlateSet, goalWeight: Double? = null, openPref
 
             Button(
                 onClick = {
-                    result = goalDouble?.let { plateSet.calculatePlates(it) }
+                    underEstimate = goalDouble?.let { plateSet.calculateUnderEstimate(it) }
+                    overEstimate = goalDouble?.let { plateSet.calculateOverEstimate(it) }
                 },
                 modifier = Modifier.weight(3f)
             ) {
                 Text(text = "Go")
             }
         }
-        result?.let { calc ->
-            val weightUnits = LocalUnits.current.weightUnit
-            val barAmount = plateSet.bar?.toString() ?: "none"
-            Text(text = "Bar: $barAmount $weightUnits")
-            Row(horizontalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxWidth()) {
-                if (calc.lowSet != null){
-                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp).weight(1f)) {
-                        item {
-                            val text = if (calc.exact) {
-                                "Exact result"
-                            } else {
-                                "Low estimate: ${calc.lowError} $weightUnits under"
-                            }
-                            Text(text = text)
+        val weightUnits = LocalUnits.current.weightUnit
+        val barAmount = plateSet.bar?.toString() ?: "none"
+        Text(text = "Bar: $barAmount $weightUnits")
+        Row(horizontalArrangement = Arrangement.Center,
+        modifier = Modifier.fillMaxWidth()) {
+            underEstimate?.let{ calc ->
+                LazyColumn(modifier = Modifier
+                    .padding(horizontal = 5.dp)
+                    .weight(1f)) {
+                    item {
+                        val text = if (calc.error == 0.0) {
+                            "Exact result"
+                        } else {
+                            "Low estimate: ${calc.error.roundTo(2)} $weightUnits under"
                         }
-                        items(calc.lowSet){
-                            Text(text = "2 x $it $weightUnits")
-                        }
+                        Text(text = text)
+                    }
+                    items(calc.set){
+                        Text(text = "2 x ${it.roundTo(2)} $weightUnits")
                     }
                 }
-                if (calc.highSet != null && !calc.exact) {
-                    LazyColumn(modifier = Modifier.padding(horizontal = 5.dp).weight(1f)) {
-                        item {
-                            Text(text = "High estimate ${calc.highError} $weightUnits over")
-                        }
-                        items(calc.highSet){
-                            Text(text = "2 x $it $weightUnits")
-                        }
-                    }
-                }
-
             }
+            overEstimate?.let { calc ->
+                if (underEstimate?.error == 0.0)  return@let
+                LazyColumn(modifier = Modifier
+                    .padding(horizontal = 5.dp)
+                    .weight(1f)) {
+                    item {
+                        Text(text = "High estimate ${calc.error.roundTo(2)} $weightUnits over")
+                    }
+                    items(calc.set){
+                        Text(text = "2 x ${it.roundTo(2)} $weightUnits")
+                    }
+                }
+            } ?: Text("no high")
+
         }
         Button(onClick = openPreferences) {
             Text(text = "Update available weights in preferences")
