@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.holden.workout531.LocalUnits
 import com.holden.workout531.utility.ValidatingTextField
+import com.holden.workout531.utility.roundTo
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -39,7 +40,7 @@ fun WorkoutView(workout: Workout, onSavePR: (Int?)->Unit, onShowCalculatePlates:
                 }).fillMaxWidth()) {
                     val setsText = if (it.sets > 1) "${it.sets} sets of " else ""
                     Text(
-                        text = "$setsText${it.weight}${LocalUnits.current.weightUnit} x ${it.reps}",
+                        text = "$setsText${it.weight.roundTo(2)}${LocalUnits.current.weightUnit} x ${it.reps}",
                         style = MaterialTheme.typography.labelLarge,
                         modifier = Modifier.padding(10.dp)
                     )
